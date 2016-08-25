@@ -1,0 +1,4 @@
+services:
+#    erp_oauth.example:
+#        class: Erp\Bundle\OauthBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]

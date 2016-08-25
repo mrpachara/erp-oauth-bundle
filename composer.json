@@ -1,0 +1,23 @@
+{
+    "name": "mrpachara/erp-core-bundle",
+    "description": "ERP Core Bundle",
+    "keywords": ["annotations","aop"],
+    "type": "symfony-bundle",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Pachara Tinamas",
+            "email": "mrpachara@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.9",
+        "symfony/symfony": "3.1.*"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^2.7"
+    },
+    "autoload": {
+        "psr-4": { "Erp\\Bundle\\CoreBundle\\": "" }
+    }
+}
