@@ -1,39 +1,54 @@
 <?php
 namespace Erp\Bundle\OauthBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
-use Erp\Bundle\SystemBundle\Model\SystemClientInterface;
-use Erp\Bundle\SystemBundle\Model\SystemUserInterface;
-
 use FOS\OAuthServerBundle\Entity\AccessToken as FOSAccessToken;
+use FOS\OAuthServerBundle\Model\ClientInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="oauth.accesstoken")
+ * Oauth Access Token Entity
  */
 class OauthAccessToken extends FOSAccessToken{
     /**
-     * @ORM\Id
-     * @ORM\Column(type="bigint")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
      * @var string
      */
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Erp\Bundle\SystemBundle\Entity\SystemClient")
-     * @ORM\JoinColumn(nullable=false)
-     *
-     * @var SystemClientInterface
+     * @var string
+     */
+    protected $clientId;
+
+    /**
+     * @var ClientInterface
      */
     protected $client;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Erp\Bundle\SystemBundle\Entity\SystemUser")
-     *
-     * @var SystemUserInterface
+     * @var string
+     */
+    protected $userId;
+
+    /**
+     * @var UserInterface
      */
     protected $user;
+
+    function getClinetId(){
+      return $this->clientId;
+    }
+
+    function setClient(ClientInterface $client){
+      $this->clientId = $client->getPublicId();
+      $this->client = $client;
+    }
+
+    function getUserId(){
+      return $this->userId;
+    }
+
+    function setUser(UserInterface $user){
+      $this->userId = $user->getUsername();
+      $this->user = $user;
+    }
 }

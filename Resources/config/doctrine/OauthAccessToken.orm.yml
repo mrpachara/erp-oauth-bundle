@@ -1,0 +1,16 @@
+Erp\Bundle\OauthBundle\Entity\OauthAccessToken:
+  type: entity
+  repositoryClass: Erp\Bundle\CoreBundle\Infrastructure\ORM\Repository\OauthAccessToken
+  table: oauth_accesstoken
+  id:
+    id:
+      type: bigint
+      generator:
+        strategy: IDENTITY
+  fields:
+    client:
+      type: bigint
+      nullable: false
+    user:
+      type: bigint
+      nullable: false

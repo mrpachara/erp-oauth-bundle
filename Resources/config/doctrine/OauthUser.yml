@@ -1,0 +1,12 @@
+Erp\Bundle\OauthBundle\Entity\OauthUser:
+  type: embeddable
+  fields:
+    id:
+      type: string
+      nullable: false
+    username:
+      type: string
+      nullable: false
+    roles:
+      type: simple_array
+      nullable: true

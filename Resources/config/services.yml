@@ -2,3 +2,49 @@ services:
 #    erp_oauth.example:
 #        class: Erp\Bundle\OauthBundle\Example
 #        arguments: ["@service_id", "plain_value", %parameter%]
+
+  # CQRS
+  erp_oauth.cqrs.oauth_accesstoken:
+    class: Erp\Bundle\CoreBundle\Domain\CQRS\CQRSContainer
+    arguments:
+      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthAccessToken')"
+      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthAccessToken')"
+
+  erp_oauth.cqrs.oauth_refreshtoken:
+    class: Erp\Bundle\CoreBundle\Domain\CQRS\CQRSContainer
+    arguments:
+      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthRefreshToken')"
+      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthRefreshToken')"
+
+  erp_oauth.cqrs.oauth_authcode:
+    class: Erp\Bundle\CoreBundle\Domain\CQRS\CQRSContainer
+    arguments:
+      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthAuthCode')"
+      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthAuthCode')"
+
+  # service
+  erp_oauth.service.oauth_accesstoken:
+    class: Erp\Bundle\OauthBundle\Infrastructure\Service\OauthTokenService
+    arguments:
+      - "@erp_oauth.cqrs.oauth_accesstoken"
+      - "@fos_oauth_server.user_provider"
+      - "@fos_oauth_server.client_manager"
+
+  erp_oauth.service.oauth_refreshtoken:
+    class: Erp\Bundle\OauthBundle\Infrastructure\Service\OauthTokenService
+    arguments:
+      - "@erp_oauth.cqrs.oauth_refreshtoken"
+      - "@fos_oauth_server.user_provider"
+      - "@fos_oauth_server.client_manager"
+
+  erp_oauth.service.oauth_authcode:
+    class: Erp\Bundle\OauthBundle\Infrastructure\Service\OauthAuthCodeService
+    arguments:
+      - "@erp_oauth.cqrs.oauth_authcode"
+      - "@fos_oauth_server.user_provider"
+      - "@fos_oauth_server.client_manager"
+
+  erp_oauth.service.oauth_client:
+    class: Erp\Bundle\OauthBundle\Infrastructure\Service\OauthClientService
+    arguments:
+      - "@erp_system.cqrs.system_client"
