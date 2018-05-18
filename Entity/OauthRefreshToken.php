@@ -1,39 +1,44 @@
 <?php
 namespace Erp\Bundle\OauthBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
-use Erp\Bundle\SystemBundle\Model\SystemClientInterface;
-use Erp\Bundle\SystemBundle\Model\SystemUserInterface;
-
 use FOS\OAuthServerBundle\Entity\RefreshToken as BaseRefreshToken;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+use Erp\Bundle\SystemBundle\Entity\SystemUser;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="oauth.refreshtoken")
+ * Oauth Refresh Token Entity
  */
-class OauthRefreshToken extends BaseRefreshToken{
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="bigint")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
-     * @var string
-     */
+class OauthRefreshToken extends BaseRefreshToken
+{
+    /** @var string */
     protected $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Erp\Bundle\SystemBundle\Entity\SystemClient")
-     * @ORM\JoinColumn(nullable=false)
-     *
-     * @var SystemClientInterface
-     */
+    /** @var OauthClient */
     protected $client;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Erp\Bundle\SystemBundle\Entity\SystemUser")
-     *
-     * @var SystemUserInterface
-     */
+    /** @var string */
+    protected $username;
+
+    /** @var SystemUser */
     protected $user;
+
+    /**
+     * Get User ID
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUser(UserInterface $user)
+    {
+        $this->username = $user->getUsername();
+        $this->user = $user;
+    }
 }

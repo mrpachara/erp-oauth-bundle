@@ -1,50 +1,82 @@
+parameters:
+    container.autowiring.strict_mode: true
+
 services:
-#    erp_oauth.example:
-#        class: Erp\Bundle\OauthBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]
 
-  # CQRS
-  erp_oauth.cqrs.oauth_accesstoken:
-    class: Erp\Bundle\CoreBundle\Domain\CQRS\CQRSContainer
-    arguments:
-      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthAccessToken')"
-      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthAccessToken')"
+  _defaults:
+    # automatically injects dependencies in your services
+    autowire: true
+    # automatically registers your services as commands, event subscribers, etc.
+    autoconfigure: true
+    # this means you cannot fetch services directly from the container via $container->get()
+    # if you need to do this, you can override this setting on individual services
+    public: false
 
-  erp_oauth.cqrs.oauth_refreshtoken:
-    class: Erp\Bundle\CoreBundle\Domain\CQRS\CQRSContainer
-    arguments:
-      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthRefreshToken')"
-      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthRefreshToken')"
+  Erp\Bundle\OauthBundle\:
+    resource: '../../*'
+    # you can exclude directories or files
+    # but if a service is unused, it's removed anyway
+    exclude: '../../{Collection,Entity,Infrastructure/ORM/Repository}'
 
-  erp_oauth.cqrs.oauth_authcode:
-    class: Erp\Bundle\CoreBundle\Domain\CQRS\CQRSContainer
-    arguments:
-      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthAuthCode')"
-      - "@=service('doctrine').getRepository('ErpOauthBundle:OauthAuthCode')"
+  Erp\Bundle\OauthBundle\Controller\:
+    resource: '../../Controller'
+    tags: ['controller.service_arguments']
 
-  # service
-  erp_oauth.service.oauth_accesstoken:
-    class: Erp\Bundle\OauthBundle\Infrastructure\Service\OauthTokenService
+  #Erp\Bundle\OauthBundle\Processor\ScopeProcessorRegistry: ~
+
+  # erp_oauth.container.scope_processor:
+  #   class: Erp\Bundle\OauthBundle\Processor\ScopeProcessor
+
+  Erp\Bundle\OauthBundle\Infrastructure\ORM\Service\OauthSimpleCommandService:
     arguments:
-      - "@erp_oauth.cqrs.oauth_accesstoken"
+      - "@doctrine.orm.oauth_entity_manager"
+
+  Erp\Bundle\OauthBundle\Domain\CQRS\OauthSimpleCommand: '@Erp\Bundle\OauthBundle\Infrastructure\ORM\Service\OauthSimpleCommandService'
+
+  Erp\Bundle\OauthBundle\Domain\CQRS\OauthAccessTokenQuery: '@Erp\Bundle\OauthBundle\Infrastructure\ORM\Service\OauthAccessTokenQueryService'
+  Erp\Bundle\OauthBundle\Domain\CQRS\OauthRefreshTokenQuery: '@Erp\Bundle\OauthBundle\Infrastructure\ORM\Service\OauthRefreshTokenQueryService'
+  Erp\Bundle\OauthBundle\Domain\CQRS\OauthAuthCodeQuery: '@Erp\Bundle\OauthBundle\Infrastructure\ORM\Service\OauthAuthCodeQueryService'
+  Erp\Bundle\OauthBundle\Domain\CQRS\OauthClientQuery: '@Erp\Bundle\OauthBundle\Infrastructure\ORM\Service\OauthClientQueryService'
+
+  Erp\Bundle\OauthBundle\Manager\OauthAccessTokenManager:
+    #class: Erp\Bundle\OauthBundle\Service\OauthAccessTokenManager
+    arguments:
+      - '@Erp\Bundle\OauthBundle\Domain\CQRS\OauthAccessTokenQuery'
+      - '@Erp\Bundle\OauthBundle\Domain\CQRS\OauthSimpleCommand'
       - "@fos_oauth_server.user_provider"
-      - "@fos_oauth_server.client_manager"
+      - '@Erp\Bundle\OauthBundle\Processor\ScopeProcessorRegistry'
 
-  erp_oauth.service.oauth_refreshtoken:
-    class: Erp\Bundle\OauthBundle\Infrastructure\Service\OauthTokenService
+  Erp\Bundle\OauthBundle\Manager\OauthRefreshTokenManager:
+    #class: Erp\Bundle\OauthBundle\Service\OauthRefreshTokenManager
     arguments:
-      - "@erp_oauth.cqrs.oauth_refreshtoken"
+      - '@Erp\Bundle\OauthBundle\Domain\CQRS\OauthRefreshTokenQuery'
+      - '@Erp\Bundle\OauthBundle\Domain\CQRS\OauthSimpleCommand'
       - "@fos_oauth_server.user_provider"
-      - "@fos_oauth_server.client_manager"
+      - '@Erp\Bundle\OauthBundle\Processor\ScopeProcessorRegistry'
 
-  erp_oauth.service.oauth_authcode:
-    class: Erp\Bundle\OauthBundle\Infrastructure\Service\OauthAuthCodeService
+  Erp\Bundle\OauthBundle\Manager\OauthAuthCodeManager:
+    #class: Erp\Bundle\OauthBundle\Service\OauthAuthCodeManager
     arguments:
-      - "@erp_oauth.cqrs.oauth_authcode"
+      - '@Erp\Bundle\OauthBundle\Domain\CQRS\OauthAuthCodeQuery'
+      - '@Erp\Bundle\OauthBundle\Domain\CQRS\OauthSimpleCommand'
       - "@fos_oauth_server.user_provider"
-      - "@fos_oauth_server.client_manager"
+      - '@Erp\Bundle\OauthBundle\Processor\ScopeProcessorRegistry'
 
-  erp_oauth.service.oauth_client:
-    class: Erp\Bundle\OauthBundle\Infrastructure\Service\OauthClientService
+  Erp\Bundle\OauthBundle\Manager\OauthClientManager:
+    #class: Erp\Bundle\OauthBundle\Service\OauthClientManager
     arguments:
-      - "@erp_system.cqrs.system_client"
+      - '@Erp\Bundle\OauthBundle\Domain\CQRS\OauthClientQuery'
+      - '@Erp\Bundle\OauthBundle\Domain\CQRS\OauthSimpleCommand'
+
+  Erp\Bundle\OauthBundle\Server\OAuth2:
+    #class: Erp\Bundle\OauthBundle\Server\OAuth2
+    arguments:
+      - "@fos_oauth_server.storage"
+      - "%fos_oauth_server.server.options%"
+      - '@Erp\Bundle\OauthBundle\Processor\ScopeProcessorRegistry'
+
+  erp_oauth.service.manager.oauth_access_token: '@Erp\Bundle\OauthBundle\Manager\OauthAccessTokenManager'
+  erp_oauth.service.manager.oauth_refresh_token: '@Erp\Bundle\OauthBundle\Manager\OauthRefreshTokenManager'
+  erp_oauth.service.manager.oauth_auth_code: '@Erp\Bundle\OauthBundle\Manager\OauthAuthCodeManager'
+  erp_oauth.service.manager.oauth_client: '@Erp\Bundle\OauthBundle\Manager\OauthClientManager'
+  fos_oauth_server.server: '@Erp\Bundle\OauthBundle\Server\OAuth2'

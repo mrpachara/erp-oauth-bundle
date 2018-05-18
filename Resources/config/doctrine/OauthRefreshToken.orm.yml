@@ -1,7 +1,7 @@
-Erp\Bundle\OauthBundle\Entity\OauthAccessToken:
+Erp\Bundle\OauthBundle\Entity\OauthRefreshToken:
   type: entity
   # repositoryClass: Erp\Bundle\CoreBundle\Infrastructure\ORM\Repository\OauthAccessToken
-  table: oauth_accesstoken
+  table: oauth_refreshtoken
   id:
     id:
       type: bigint

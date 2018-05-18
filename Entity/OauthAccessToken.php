@@ -2,53 +2,43 @@
 namespace Erp\Bundle\OauthBundle\Entity;
 
 use FOS\OAuthServerBundle\Entity\AccessToken as FOSAccessToken;
-use FOS\OAuthServerBundle\Model\ClientInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+
+use Erp\Bundle\SystemBundle\Entity\SystemUser;
 
 /**
  * Oauth Access Token Entity
  */
-class OauthAccessToken extends FOSAccessToken{
-    /**
-     * @var string
-     */
+class OauthAccessToken extends FOSAccessToken
+{
+    /** @var string */
     protected $id;
 
-    /**
-     * @var string
-     */
-    protected $clientId;
-
-    /**
-     * @var ClientInterface
-     */
+    /** @var OauthClient */
     protected $client;
 
-    /**
-     * @var string
-     */
-    protected $userId;
+    /** @var string */
+    protected $username;
 
-    /**
-     * @var UserInterface
-     */
+    /** @var SystemUser */
     protected $user;
 
-    function getClinetId(){
-      return $this->clientId;
+    /**
+     * Get User ID
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
     }
 
-    function setClient(ClientInterface $client){
-      $this->clientId = $client->getPublicId();
-      $this->client = $client;
-    }
-
-    function getUserId(){
-      return $this->userId;
-    }
-
-    function setUser(UserInterface $user){
-      $this->userId = $user->getUsername();
-      $this->user = $user;
+    /**
+     * {@inheritDoc}
+     */
+    public function setUser(UserInterface $user)
+    {
+        $this->username = $user->getUsername();
+        $this->user = $user;
     }
 }

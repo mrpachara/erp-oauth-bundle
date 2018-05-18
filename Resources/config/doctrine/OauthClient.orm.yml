@@ -1,0 +1,8 @@
+Erp\Bundle\OauthBundle\Entity\OauthClient:
+  type: entity
+  table: oauth_client
+  id:
+    id:
+      type: bigint
+      generator:
+        strategy: IDENTITY

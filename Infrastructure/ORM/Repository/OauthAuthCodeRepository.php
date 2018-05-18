@@ -2,14 +2,14 @@
 
 namespace Erp\Bundle\OauthBundle\Infrastructure\ORM\Repository;
 
-use Erp\Bundle\CoreBundle\Infrastructure\ORM\Repository\ErpRepository;
+use Erp\Bundle\CoreBundle\Infrastructure\ORM\Repository\ErpRepositoryOld;
 use Erp\Bundle\OauthBundle\Domain\CQRS\OauthAuthCodeQuery as QueryInterface;
 use Erp\Bundle\OauthBundle\Domain\CQRS\OauthAuthCodeCommand as CommandInterface;
 
 /**
  * Oauth Auth Code Repository (ORM)
  */
-class OauthAuthCodeRepository extends ErpRepository implements
+class OauthAuthCodeRepository extends ErpRepositoryOld implements
   QueryInterface, CommandInterface{
   public function deleteExpired(){
     $qb = $this->createQueryBuilder('a');
