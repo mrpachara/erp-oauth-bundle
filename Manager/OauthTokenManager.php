@@ -10,8 +10,6 @@ use FOS\OAuthServerBundle\Model\TokenInterface;
 use Erp\Bundle\CoreBundle\Domain\CQRS\SimpleCommand;
 use Erp\Bundle\OauthBundle\Domain\CQRS\OauthTokenOrCodeQuery as QueryInterface;
 
-use Erp\Bundle\ConsoleBundle\Processor\ScopeProcessorRegistry;
-
 /**
  * {@inheritdoc}
  */
