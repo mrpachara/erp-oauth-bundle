@@ -90,17 +90,10 @@ abstract class OauthTokenOrCodeManager
         $qb
             ->delete($this->query->getClassName(), '_tokenOrCode')
             ->where('_tokenOrCode.expiresAt < ?1')
+            // NOTE: setParameters() always removes all of old parameters.
             ->setParameters([1 => time()])
         ;
 
         return $qb->getQuery()->execute();
-        // $qb = $this->repository->createQueryBuilder('t');
-        // $qb
-        //     ->delete()
-        //     ->where('t.expiresAt < ?1')
-        //     ->setParameters([1 => time()])
-        // ;
-        //
-        // return $qb->getQuery()->execute();
     }
 }
